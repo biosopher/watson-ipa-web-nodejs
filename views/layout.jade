@@ -1,0 +1,31 @@
+//- layout.jade
+doctype html
+html(lang='en')
+  head
+    block title
+      title Dialog Tool
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+    link(rel='shortcut icon', href='/images/favicon.ico', type='image/x-icon')
+    link(rel='icon', href='/images/favicon.ico', type='image/x-icon')
+    link(rel='stylesheet', href='/css/bootstrap-dark.css')
+    link(rel='stylesheet', href='/css/banner.css')
+    link(rel='stylesheet', href='/css/style.css')
+    block extra-stylesheet
+
+  body
+    div.row.service-container
+        div.row.header
+          div.container
+            div.avatar.col-md-2.col-sm-2.hidden-xs
+              img.service-icon(src='/images/app.png')
+            div.col-lg-10.col-md-10.col-sm-10.dialog-description
+              h1.service-title Virtual Personal Assistant
+              p.service-description Demo using IBM Watson Dialog + NLC Services
+      block row-content
+
+    script(type='text/javascript', src='/js/jquery-1.11.1.min.js')
+    script(type='text/javascript', src='/js/index.js')
+    block extra-scripts

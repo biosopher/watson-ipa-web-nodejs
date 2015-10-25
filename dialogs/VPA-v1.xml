@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog xsi:noNamespaceSchemaLocation="WatsonDialogDocument_1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <flow>
+        <folder label="Main">
+            <output>
+                <prompt>
+                    <item>Hello, how can I help you?</item>
+                </prompt>
+                <goto ref="getUserInput_2442994"/>
+            </output>
+            <output ref="getUserInput_2442993">
+                <prompt>
+                    <item>How else can I help you today?</item>
+                </prompt>
+                <getUserInput id="getUserInput_2442994">
+                    <search ref="folder_2442998"/>
+                    <default>
+                        <output>
+                            <prompt selectionType="RANDOM">
+                                <item>I'm sorry I did not understand your question, please try again.</item>
+                            </prompt>
+                        </output>
+                    </default>
+                </getUserInput>
+            </output>
+        </folder>
+        <folder label="Library">
+            <folder label="Live Content" id="folder_2442998">
+                <input>
+                    <grammar>
+                        <item>$ meeting</item>
+                    </grammar>
+                    <output id="output_2443150">
+                        <prompt>
+                            <item>Who should I invite to your meeting?</item>
+                        </prompt>
+                        <getUserInput>
+                            <input>
+                                <grammar>
+                                    <item>$ (ContactFriendsList)={MeetingAttendee1}</item>
+                                </grammar>
+                                <action varName="MeetingAttendee1" operator="SET_TO">{MeetingAttendee1.value:main}</action>
+                                <output>
+                                    <prompt>
+                                        <item>I'll invite {MeetingAttendee1}</item>
+                                    </prompt>
+                                    <goto ref="output_2443160"/>
+                                </output>
+                            </input>
+                            <input>
+                                <grammar>
+                                    <item>$ (ContactFamilyList)={MeetingAttendee1}</item>
+                                </grammar>
+                                <action varName="MeetingAttendee1" operator="SET_TO">{MeetingAttendee1.value:main}</action>
+                                <output>
+                                    <prompt>
+                                        <item>I'll invite your {MeetingAttendee1}</item>
+                                    </prompt>
+                                    <goto ref="output_2443160"/>
+                                </output>
+                            </input>
+                            <output>
+                                <prompt>
+                                    <item>I can't find that person in your contacts.</item>
+                                </prompt>
+                                <goto ref="output_2443150"/>
+                            </output>
+                        </getUserInput>
+                    </output>
+                </input>
+            </folder>
+            <folder label="Meeting Time">
+                <output id="output_2443160">
+                    <prompt selectionType="RANDOM">
+                        <item>What time is your meeting?</item>
+                    </prompt>
+                    <getUserInput>
+                        <input>
+                            <grammar>
+                                <item>$ (DATE_TIME_RANGE)={MeetingTime}</item>
+                            </grammar>
+                            <action varName="MeetingTime" operator="SET_TO">{MeetingTime.value:FROM_TIME}</action>
+                            <goto ref="output_2443170"/>
+                        </input>
+                        <output>
+                            <prompt>
+                                <item>I'll need a valid time to continue.</item>
+                            </prompt>
+                            <goto ref="output_2443160"/>
+                        </output>
+                    </getUserInput>
+                </output>
+            </folder>
+            <folder label="Meeting Date">
+                <output id="output_2443170">
+                    <prompt>
+                        <item>What is the date for your meeting?</item>
+                    </prompt>
+                    <getUserInput>
+                        <input>
+                            <grammar>
+                                <item>$ (DATE_TIME_RANGE)={MeetingDate}</item>
+                            </grammar>
+                            <action varName="MeetingDate" operator="SET_TO">{MeetingDate.value:FROM_DATE}</action>
+                            <output>
+                                <prompt>
+                                    <item>
+                                        I've invited {MeetingAttendee1} to your meeting at {MeetingTime} on {MeetingDate}.
+                                    </item>
+                                </prompt>
+                                <goto ref="getUserInput_2442993"/>
+                            </output>
+                        </input>
+                        <output>
+                            <prompt>
+                                <item>I'll need a valid date to continue.</item>
+                            </prompt>
+                            <goto ref="output_2443170"/>
+                        </output>
+                    </getUserInput>
+                </output>
+            </folder>
+            <folder label="Storage"/>
+        </folder>
+        <folder label="Global"/>
+        <folder label="Concepts">
+            <concept>
+                <grammar>
+                    <item>VPA</item>
+                    <item>Virtual Agent</item>
+                    <item>Virtual Personal Agent</item>
+                </grammar>
+            </concept>
+        </folder>
+    </flow>
+    <entities>
+        <entity name="ContactFriendsList">
+            <value name="Anthony" value="Anthony"/>
+            <value name="Kelly" value="Kelly"/>
+            <value name="Ryan" value="Ryan"/>
+            <value name="Tina" value="Tina"/>
+        </entity>
+        <entity name="ContactFamilyList">
+            <value name="mother" value="mother"/>
+            <value name="father" value="father"/>
+            <value name="wife" value="wife"/>
+            <value name="husband" value="husband"/>
+            <value name="brother" value="brother"/>
+            <value name="sister" value="sister"/>
+        </entity>
+    </entities>
+    <constants>
+        <var_folder name="Home">
+            <var_folder name="General" type="CONST">
+                <var name="VA" type="TAG">Virtual Agent</var>
+            </var_folder>
+        </var_folder>
+    </constants>
+    <variables>
+        <var_folder name="Home">
+            <var name="MeetingAttendee1" type="TEXT" description="First person to invite to the meeting"/>
+            <var name="MeetingAttendee2" type="TEXT" description="Second person to invite to the meeting"/>
+            <var name="MeetingDate" type="TEXT" description="Date for the meeting"/>
+            <var name="MeetingTime" type="TEXT" description="Time for the meeting"/>
+        </var_folder>
+    </variables>
+    <settings>
+        <setting name="USERIDNUM" type="USER">17384</setting>
+        <setting name="EMAIL" type="USER"></setting>
+        <setting name="PASSWORD" type="USER"></setting>
+        <setting name="FIRSTNAME" type="USER">IBM</setting>
+        <setting name="LASTNAME" type="USER">Watson</setting>
+        <setting name="COUNTRY" type="USER">USA</setting>
+        <setting name="STATE" type="USER">NY State</setting>
+        <setting name="CITY" type="USER">NY</setting>
+        <setting name="BDAY" type="USER">1</setting>
+        <setting name="BMONTH" type="USER">1</setting>
+        <setting name="BYEAR" type="USER">2000</setting>
+        <setting name="SEX" type="USER">Male</setting>
+        <setting name="DISPLAYNAME" type="USER">John</setting>
+        <setting name="PROVIDESECURITYPASSWORD" type="USER">false</setting>
+        <setting name="SECURITYPASSWORD" type="USER"></setting>
+        <setting name="SHOWPERSPROFILE" type="USER">false</setting>
+        <setting name="USETYPE" type="USER">0</setting>
+        <setting name="DATEJOINED" type="USER">2015-07-14 15:12:07.745</setting>
+        <setting name="LASTLOGIN" type="USER">2015-07-14 15:12:07.745</setting>
+        <setting name="LOGINCOUNT" type="USER">0</setting>
+        <setting name="CREDIT" type="USER">100</setting>
+        <setting name="CONVCOUNT" type="USER">4</setting>
+        <setting name="PERSONALITYTYPEID" type="USER">6</setting>
+        <setting name="SHOWSENDMESSAGE" type="USER">true</setting>
+        <setting name="ACTIVATED" type="USER">true</setting>
+        <setting name="MESSENGEREMAIL" type="USER"></setting>
+        <setting name="MESSENGERPASSWORD" type="USER"></setting>
+        <setting name="SENDCHATEMAIL" type="USER">false</setting>
+        <setting name="SENDFAVEMAIL" type="USER">true</setting>
+        <setting name="CACHE" type="USER">true</setting>
+        <setting name="CLASSTYPE" type="USER">3</setting>
+        <setting name="AUTOLEARN" type="USER">false</setting>
+        <setting name="LANGUAGE" type="USER">EN</setting>
+        <setting name="RESPONSETIME" type="USER">-2</setting>
+        <setting name="MAXAUTOLEARNITEMS" type="USER">4</setting>
+        <setting name="NUMAUTOSETRELATED" type="USER">0</setting>
+        <setting name="TIMEZONEID" type="USER">America/New_York</setting>
+        <setting name="AUTOSETRELATEDNODEID" type="USER">0</setting>
+        <setting name="RETURNTOCHATNODEID" type="USER">0</setting>
+        <setting name="INPUTMASKTYPE" type="USER">0</setting>
+        <setting name="NUMLOGINATTEMPTS" type="USER">0</setting>
+        <setting name="CONCEPTMATCHING" type="USER">1</setting>
+        <setting name="UI_COLOUR"></setting>
+        <setting name="USE_CONCEPTS">3</setting>
+        <setting name="PARENT_ACCOUNT"></setting>
+        <setting name="AL_NONE_LABEL">None of the above</setting>
+        <setting name="ASR_RANDOM">true</setting>
+        <setting name="DYNAMIC_MESSAGING">false</setting>
+        <setting name="DOCBASE_NUM_RESULTS">3</setting>
+        <setting name="DOCBASE_DESC_LEN">250</setting>
+        <setting name="STATUS">0</setting>
+        <setting name="DEFAULT_DNR_RETURN_POINT_CANDIDATE">-1</setting>
+        <setting name="ENTITIES_SCOPE">3</setting>
+        <setting name="POSTNODEID"></setting>
+        <setting name="MULTISENT">0</setting>
+        <setting name="DNR_NODE_ID">-15</setting>
+        <setting name="CLEARCACHE"></setting>
+    </settings>
+    <specialSettings>
+        <specialSetting label="DNR Join Statement">
+            <variations/>
+        </specialSetting>
+    </specialSettings>
+</dialog>
