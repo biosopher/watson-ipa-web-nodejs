@@ -39,7 +39,7 @@ Train an NLC service using a long list of training pairs consisting of user test
 
 6) [Running the app at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
 
-_[**Troubleshooting**](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)_
+7) [Troubleshooting](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)_
 
 ### License
 This sample code is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/watson-developer-cloud/natural-language-classifier-nodejs/blob/master/LICENSE).
