@@ -22,8 +22,6 @@ These are the tasks we'll attempt to classify:
 ### Getting Started
 To act on our user's intent, we first need to classify it into one of our categories above.  The [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) uses deep machine learning techniques to return the top matching predefined classes for short text inputs.  We'll train the NLC using various text examples of users making the requests above.  Next, we'll need to ensure we have all the information required to complete the user's request.  To do this, we'll rely on the [Watson Dialog service](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/dialog.html) which supports building conversations between a user and an application. The Dialog service will track and store information obtained during the conversation until we have all the additional information required to complete the task. 
 
-The following sections will guide you through these tasks:
-
 ### Getting Started
 Following these sections to setup your services and host your app either in Bluemix or locally.
 
@@ -41,7 +39,7 @@ Train an NLC service using a long list of training pairs consisting of user test
 
 6) [Running the app at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
 
-* [Troubleshooting](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)
+_[**Troubleshooting**](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)_
 
 ### License
 This sample code is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/watson-developer-cloud/natural-language-classifier-nodejs/blob/master/LICENSE).
