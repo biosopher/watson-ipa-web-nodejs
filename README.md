@@ -24,22 +24,13 @@ To act on our user's intent, we first need to classify it into one of our catego
 
 ### Getting Started
 Following these sections to setup your services and host your app either in Bluemix or locally.
-
-1) [Setup Watson Natural Language Classifier and Dialog services on Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Setup-Watson-Natural-Language-Classifier-and-Dialog-services-on-Bluemix)
+-[ ] [Setup Watson Natural Language Classifier and Dialog services on Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Setup-Watson-Natural-Language-Classifier-and-Dialog-services-on-Bluemix)
 Setup your Bluemix account and login from the command line using Cloud Foundry in order to launch your Watson services.
-
-2) [Train the Natural Language Classifier service](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Train-the-Natural-Language-Classifier-service)
+-[ ] [Train the Natural Language Classifier service](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Train-the-Natural-Language-Classifier-service)
 Train an NLC service using a long list of training pairs consisting of user test queries matched to our pre-defined classes     your Bluemix account and login from the command line using Cloud Foundry in order to launch your Watson services.
-
-3) [Configure your Dialog service with IBM's Dialog XML](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Configure-your-Dialog-service-with-IBM's-Dialog-XML)
-
-4) Connect the NodeJS app to your Natural Language Classifier service
-
-5) Connect the NodeJS app to your Dialog service
-
-6) [Running the app at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
-
-7) [Troubleshooting](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)_
+-[ ] [Configure your Dialog service with IBM's Dialog XML](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Configure-your-Dialog-service-with-IBM's-Dialog-XML)
+-[ ] [Running the locally app at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
+-[ ] [Troubleshooting](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)_
 
 ### More Details
 For more details about developing applications that use Watson Developer Cloud services in Bluemix, see [Getting started with Watson Developer Cloud and Bluemix](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/getting_started/).
