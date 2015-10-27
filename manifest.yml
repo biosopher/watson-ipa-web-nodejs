@@ -1,14 +1,14 @@
 declared-services:
-  dialog-service:
+  ipa-dialog_service:
     label: dialog
-    plan: standard
-  natural_language_classifier-service:
+    plan: ecosystem
+  ipa-natural_language_classifier_service:
     label: natural_language_classifier
-    plan: standard
+    plan: ecosystem
 applications:
 - services:
-  - natural-language-classifier-service
-  - dialog-service
+  - ipa-natural_language_classifier_service
+  - ipa-dialog_service
   name: dialog-tool-anthony
   command: node app.js
   path: .
