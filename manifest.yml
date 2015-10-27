@@ -8,12 +8,8 @@ declared-services:
 applications:
 - services:
   - natural-language-classifier-service
-    name: dialog-tool-anthony
-    command: node app.js
-    path: .
-    memory: 128M
   - dialog-service
-    name: dialog-tool-anthony
-    command: node app.js
-    path: .
-    memory: 128M
+  name: dialog-tool-anthony
+  command: node app.js
+  path: .
+  memory: 128M
