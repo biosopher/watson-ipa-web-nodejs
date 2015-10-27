@@ -46,7 +46,7 @@ $(document).ready(function() {
 
             // If VPA dialog not uploaded then upload
             data.dialogs.forEach(function(dialog, index) {
-                if (dialog.name == "vpa_demo") {
+                if (dialog.name == "demo_ipa") {
                     vpaDialog = dialog;
                 }
             });

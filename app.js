@@ -23,7 +23,7 @@ bluemix     = require('./config/bluemix'),
 extend      = require('util')._extend,
 url         = require('url'),
 https       = require('https'),
-fs          = require("fs"),
+fs          = require('fs'),
 FormData    = require('form-data'),
 Q           = require('q'); // for deferred requests
 
@@ -32,16 +32,16 @@ require('./config/express')(app);
 
 // if bluemix credentials exists, then override local
 var dialogCredentials =  extend({
-    url: "https://gateway.watsonplatform.net/dialog-beta/api",
-    username: "53eebadd-bea8-4062-9fda-84d90f6f6091",
-    password: "uFgKTZMGaVlr"
+    url: "https://gateway.watsonplatform.net/dialog/api",
+    username: "<username>",
+    password: "<password>"
 }, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
 
 // if bluemix credentials exists, then override local
 var nlcCredentials =  extend({
     "url": "https://gateway.watsonplatform.net/natural-language-classifier/api",
-    "username": "b0ca94a4-c458-46f7-b5eb-65ebeefaa550",
-    "password": "4jfd6dGAqxoh"
+    username: "<username>",
+    password: "<password>"
 }, bluemix.getServiceCreds('nlc')); // VCAP_SERVICES
 
 // Remove api as it will be passed from the web client
@@ -95,11 +95,11 @@ app.use('/nlcIntent', function(req, res) {
 app.use('/uploadVpaDialog', function(req, res) {
 
     // set content length and other values to the header
-    var filename = "VPA-v1.xml";
+    var filename = "ipa-v1.xml";
     var filePath = "dialogs/" + filename;
 
     var form = new FormData();
-    form.append('name', "vpa_demo");
+    form.append('name', "demo_ipa");
     form.append('file', fs.createReadStream(filePath));
 
     var serviceUrl = dialogCredentials.url + '/api/v1/dialogs';
