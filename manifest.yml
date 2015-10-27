@@ -1,11 +1,19 @@
 declared-services:
-  dialog-service-beta:
-    label: dialog
-    plan: experimental
+  dialog-service:
+	label: dialog
+	plan: standard
+  natural_language_classifier-service:
+	label: natural_language_classifier
+	plan: standard
 applications:
 - services:
-  - dialog-service-beta
-  name: dialog-tool-anthony
-  command: node app.js
-  path: .
-  memory: 512M
+  - natural-language-classifier-service
+	name: <application-name>
+	command: node app.js
+	path: .
+	memory: 128M
+  - dialog-service
+	name: <application-name>
+	command: node app.js
+	path: .
+	memory: 128M
