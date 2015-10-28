@@ -1,15 +1,15 @@
 declared-services:
   ipa-dialog_service:
     label: dialog
-    plan: standard
+    plan: ecosystem
   ipa-nlc_service:
     label: natural_language_classifier
-    plan: standard
+    plan: ecosystem
 applications:
 - services:
   - ipa-nlc_service
   - ipa-dialog_service
-  name: <application_name>
+  name: ipa-demo-anthony
   command: node app.js
   path: .
   memory: 128M

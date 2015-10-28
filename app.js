@@ -33,111 +33,33 @@ require('./config/express')(app);
 // if bluemix credentials exists, then override local
 var dialogCredentials =  extend({
     url: "https://gateway.watsonplatform.net/dialog/api",
-    username: "<username>",
-    password: "<password>"
+    username: "769a0689-b670-4d05-bad5-f32928bdfd54",
+    password: "cOqWEDuDsjab"
 }, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
 
 // if bluemix credentials exists, then override local
 var nlcCredentials =  extend({
     "url": "https://gateway.watsonplatform.net/natural-language-classifier/api",
-    username: "<username>",
-    password: "<password>"
+    "username": "da048475-654e-413d-bc02-43b27db22bc6",
+    "password": "0sknjUbIBiOe"
 }, bluemix.getServiceCreds('nlc')); // VCAP_SERVICES
 
 // Remove api as it will be passed from the web client
-if (dialogCredentials.url.indexOf('/api') > 0)
+if (dialogCredentials.url.indexOf('/api') > 0) {
     dialogCredentials.url = dialogCredentials.url.substring(0, dialogCredentials.url.indexOf('/api'));
-
-// Pass user text to NLC to identify intent
-app.use('/nlcIntent', function(req, res) {
-
-    res.status(200);
-    res.end("action-meeting-create");
-    /*var classifierId = "";
-    var serviceUrl = nlcCredentials.url + "/v1/classifier/" + classifierId + "/clasify";
-    var options = {
-        host: url.parse(serviceUrl).hostname,
-        path: url.parse(serviceUrl).pathname,
-        method: "GET",
-        auth: _clientReq.body.username+":"+_clientReq.body.password, // http library base64 encodes for us
-        headers:  headers
-    };
-
-    var body = {
-        text: res.body.userIntentText
-    };
-
-    var request=https.request(options, function(response) {
-
-        response.setEncoding('utf8');
-        var data="";
-        response.on('data',function(chunk) {
-            data+=chunk;
-        });
-        response.on('end',function() {
-            var json = JSON.parse(data);
-            //res.status(response.statusCode);
-            res.status(200);
-            req.end("action-meeting-create");
-            //req.end(json);
-        });
-        response.on('error',function(err) {
-            // Fake it for now
-            res.status(200);
-            res.status("action-meeting-create");
-        });
-    });
-    request.write(body);
-    request.end();*/
-});
-
-// Upload the VPA dialog to the IBM Watson Dialog service
-app.use('/uploadVpaDialog', function(req, res) {
-
-    // set content length and other values to the header
-    var filename = "ipa-v1.xml";
-    var filePath = "dialogs/" + filename;
-
-    var form = new FormData();
-    form.append('name', "demo_ipa");
-    form.append('file', fs.createReadStream(filePath));
-
-    var serviceUrl = dialogCredentials.url + '/api/v1/dialogs';
-    form.submit({
-        protocol: 'https:',
-        host: url.parse(serviceUrl).hostname,
-        path: url.parse(serviceUrl).pathname,
-        method: 'POST',
-        auth: dialogCredentials.username+":"+dialogCredentials.password // http library base64 encodes for us
-    }, function (err, response) {
-        var data="";
-        response.on('data',function(chunk) {
-            data+=chunk;
-        });
-        response.on('end',function() {
-            res.status(response.statusCode);
-            if (response.statusCode == 200 || response.statusCode == 201) {
-                res.end();
-            }else{
-                res.end(JSON.stringify(data));
-            }
-        });
-        response.on('error',function(err) {
-            console.log("response.statusCode: " + response.statusCode);
-            res.status(response.statusCode);
-            res.end(JSON.stringify(err));
-        });
-    });
-});
+}
 
 // HTTP proxy to the API
 app.use('/proxy', function(req, res) {
-    var newUrl = dialogCredentials.url + req.url;
+
+    var username = req.params.proxyType ==  "nlc" ? nlcCredentials.username : dialogCredentials.username;
+    var password = req.params.proxyType ==  "nlc" ? nlcCredentials.password : dialogCredentials.password;
+
     req.pipe(request({
-        url: newUrl,
+        url: dialogCredentials.url + req.url,
         auth: {
-            user: dialogCredentials.username,
-            pass: dialogCredentials.password,
+            user: username,
+            pass: password,
             sendImmediately: true
         }
     }, function(error){
