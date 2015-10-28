@@ -6,6 +6,8 @@ An [intelligent personal assistant](https://en.wikipedia.org/wiki/Intelligent_pe
 3. Ask users for any additional information required to complete the task
 4. Execute the task for the user (an exercise left for you to complete)
 
+![](wiki/media/demo_architecture.png)
+
 These are the tasks we'll attempt to classify:
 
 * Schedule a meeting
@@ -17,7 +19,7 @@ These are the tasks we'll attempt to classify:
 * Off-topic
 * Unknown
 
-[![Deploy to Bluemix](/wiki/media/deploy_to_bluemix.png)](https://bluemix.net/deploy?repository=https://github.com/biosopher/watson-ipa-web-nodejs)
+[![Deploy to Bluemix](wiki/media/deploy_to_bluemix.png)](https://bluemix.net/deploy?repository=https://github.com/biosopher/watson-ipa-web-nodejs)
 
 ### Getting Started
 To act on our user's intent, we first need to classify it into one of our categories above.  To accomplish this, we'll rely on the [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) which uses deep machine learning techniques to return the top matching predefined classes for short text inputs.  We'll train the NLC using various text examples of users making the requests above.  
