@@ -1,4 +1,6 @@
 ## Watson Intelligent Personal Assistant (Web Demo)
+![](wiki/media/demo_screenshot.png)
+
 An [intelligent personal assistant](https://en.wikipedia.org/wiki/Intelligent_personal_assistant) is a software agent that can perform tasks or services for an individual.  In this demo, we'll combine two Watson services to illustrate the basics of intelligent task performance:
 
 1. Capture user input.
