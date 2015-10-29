@@ -15,10 +15,8 @@ These are the tasks we'll attempt to classify:
 * Send an email
 * Set an alarm
 * Numeric calculations
-* Map directions
-* Location recommendations
 * Off-topic
-* Unknown
+* Ask a joke
 
 [![Deploy to Bluemix](wiki/media/deploy_to_bluemix.png)](https://bluemix.net/deploy?repository=https://github.com/biosopher/watson-ipa-web-nodejs)
 
