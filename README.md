@@ -14,9 +14,9 @@ These are the tasks we'll attempt to classify:
 * Schedule a meeting
 * Send an email
 * Set an alarm
-* Numeric calculations
+* Ask to perform a numeric calculations
+* Request a joke
 * Off-topic
-* Ask a joke
 
 #### How Does the Demo Work
 Curious to know how the user text is classified to a specific intent and then mapped to a dialog flow?  Here's a brief overview of [how the Watson IPA Demo works?](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/How-Does-the-Watson-IPA-Demo-Work).
