@@ -20,6 +20,10 @@ These are the tasks we'll attempt to classify:
 
 [![Deploy to Bluemix](wiki/media/deploy_to_bluemix.png)](https://bluemix.net/deploy?repository=https://github.com/biosopher/watson-ipa-web-nodejs)
 
+#### How Does the Demo Work
+Curious to know how the user text is classified to a specific intent and then mapped to a dialog flow?  Here's a brief overview of [how the Watson IPA Demo works?](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/How-Does-the-Watson-IPA-Demo-Work).
+
+
 #### Getting Started
 To act on our user's intent, we first need to classify it into one of our categories above.  To accomplish this, we'll rely on the [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) which uses deep machine learning techniques to return the top matching predefined classes for short text inputs.  We'll train the NLC using various text examples of users making the requests above.  
 
