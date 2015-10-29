@@ -17,8 +17,8 @@
 'use strict';
 
 var isCreatingMeetingViaDialog = false;
-var IPA_DIALOG_NAME = "demo_ipa";
-var IPA_CLASSIFIER_NAME = "demo_ipa";
+var IPA_DIALOG_NAME = "<unique_dialog_name>";
+var IPA_CLASSIFIER_NAME = "ipa_demo";
 var ipaDialog = null;
 var ipaNlcClassifier = null;
 var conversation = {};
