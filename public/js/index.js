@@ -36,7 +36,7 @@ var $userInput = $('.user-input');
 // initial load
 $(document).ready(function() {
 
-    initDialogsAndClassifiers();
+    retrieveDialogs();
 
     $('.input-btn').click(conductConversation);
     $userInput.keyup(function(event){
@@ -46,33 +46,7 @@ $(document).ready(function() {
     });
 });
 
-function obtainClassifier() {
-
-    $.get('/proxy/api/v1/dialogs?proxyType=dialog')
-        .done(function(data) {
-            if (data === '') {
-                data.classifiers.forEach(function(classifier, index) {
-                    if (classifier.name == IPA_CLASSIFIER_NAME) {
-                        ipaNlcClassifier = classifier;
-                    }
-                });
-            }
-
-            if (ipaNlcClassifier == null) {
-                $dialogsLoading.hide();
-                $dialogsError.find('.errorMsg').html('No classifier named "' + IPA_CLASSIFIER_NAME + '" found in the NLC service');
-                $dialogsError.show();
-            }else{
-                startConversation();
-            }
-        }).fail(function() {
-            $dialogsLoading.hide();
-            $dialogsError.show();
-            $dialogsError.find('.errorMsg').html('Error getting the dialogs.');
-        })
-}
-
-function initDialogsAndClassifiers() {
+function retrieveDialogs() {
     $dialogsLoading.show();
     $dialogsError.hide();
 
@@ -91,7 +65,7 @@ function initDialogsAndClassifiers() {
                 $dialogsError.find('.errorMsg').html('No dialog named "' + IPA_DIALOG_NAME + '" found in the Dialog service');
                 $dialogsError.show();
             }else{
-                obtainClassifier();
+                retrieveClassifiers();
             }
         }).fail(function() {
             $dialogsLoading.hide();
@@ -100,28 +74,24 @@ function initDialogsAndClassifiers() {
         })
 }
 
-function getDialogs() {
-    $dialogsLoading.show();
-    $dialogsError.hide();
+function retrieveClassifiers() {
 
-    $.get('/proxy/api/v1/dialogs?proxyType=dialog')
+    $.get('/proxy/api/v1/classifiers?proxyType=nlc')
         .done(function(data) {
-            if (data === '')
-                return;
+            if (data != '') {
+                data.classifiers.forEach(function(classifier, index) {
+                    if (classifier.name == IPA_CLASSIFIER_NAME) {
+                        ipaNlcClassifier = classifier;
+                    }
+                });
+            }
 
-            // If IPA dialog not uploaded then upload
-            data.dialogs.forEach(function(dialog, index) {
-                if (dialog.name == IPA_DIALOG_NAME) {
-                    ipaDialog = dialog;
-                }
-            });
-
-            if (ipaDialog == null) {
+            if (ipaNlcClassifier == null) {
                 $dialogsLoading.hide();
-                $dialogsError.find('.errorMsg').html('Error initializing the "' +IPA_DIALOG_NAME + '" dialog. Not present in the Dialog service');
+                $dialogsError.find('.errorMsg').html('No classifier named "' + IPA_CLASSIFIER_NAME + '" found in the NLC service');
                 $dialogsError.show();
             }else{
-                startConversation();
+                initConversation();
             }
         }).fail(function() {
             $dialogsLoading.hide();
@@ -130,18 +100,10 @@ function getDialogs() {
         })
 }
 
-function startConversation() {
+function initConversation() {
 
-    $conversation.empty();
-    $conversationDiv.show();
-
-    sendToNLC();
-}
-
-function sendToNLC() {
-    $.post('/proxy/api/v1/classifiers/' + ipaNlcClassifier.classifier_id + '/classify?proxyType=nlc', {input: ''})
+    $.post('/proxy/api/v1/dialogs/' + ipaDialog.dialog_id + '/conversation?proxyType=dialog', {input: ''})
         .done(function(data) {
-            console.log("sendToNLC: " + JSON.stringify(data));
             $conversation.empty();
             $information.empty();
             $dialogsLoading.hide();
@@ -155,35 +117,9 @@ function sendToNLC() {
             $('<div/>').text('Conversation id: ' + conversation.conversation_id).appendTo($information);
             $('<div/>').text('Client id: ' + conversation.client_id).appendTo($information);
 
-            var text = data.response.join('&lt;br/&gt;');
-            $('<p class="chat-watson"/>')
-                .html($('<div/>').html(text).text())
-                .appendTo($conversation);
+            var text = data.response.join('<br/>');
+            displayWatsonChat(text);
         });
-}
-
-function sendToDialog() {
-
-    $.post('/proxy/api/v1/dialogs/' + ipaDialog.dialog_id + '/conversation?proxyType=dialog', {input: ''})
-    .done(function(data) {
-        $conversation.empty();
-        $information.empty();
-        $dialogsLoading.hide();
-
-        // save dialog, client and conversation id
-        conversation.conversation_id = data.conversation_id;
-        conversation.client_id = data.client_id;
-        conversation.dialog_id = ipaDialog.dialog_id;
-        $('<div/>').text('Dialog name: ' + ipaDialog.name).appendTo($information);
-        $('<div/>').text('Dialog id: ' + conversation.dialog_id).appendTo($information);
-        $('<div/>').text('Conversation id: ' + conversation.conversation_id).appendTo($information);
-        $('<div/>').text('Client id: ' + conversation.client_id).appendTo($information);
-
-        var text = data.response.join('&lt;br/&gt;');
-        $('<p class="chat-watson"/>')
-            .html($('<div/>').html(text).text())
-            .appendTo($conversation);
-    });
 }
 
 /**
@@ -199,10 +135,8 @@ function handOffToDialog(userIntentText) {
     };
 
     $.post(path, params).done(function(data) {
-        var text = data.response.join('&lt;br/&gt;');
-        $('<p class="chat-watson"/>')
-            .html($('<div/>').html(text).text())
-            .appendTo($conversation);
+        var text = data.response.join('<br/>');
+        displayWatsonChat(text);
 
         getProfile();
         scrollToBottom();
@@ -213,7 +147,7 @@ function handOffToDialog(userIntentText) {
 }
 
 /**
- * Determine how we shoudl respond
+ * Determine how we should respond
  */
 function conductConversation(){
 
@@ -223,11 +157,7 @@ function conductConversation(){
     }else{
         $userInput.val('').focus();
 
-        $('<p class="chat-human"/>')
-            .html(userIntentText)
-            .appendTo($conversation);
-
-        scrollToBottom();
+        displayHumanChat(userIntentText);
 
         if (isCreatingMeetingViaDialog) {
             handOffToDialog(userIntentText);
@@ -271,22 +201,29 @@ function getProfile() {
     });
 }
 
-function getReplyToIntent(userIntent)
+function getReplyToIntent(nlcResponse, userText)
 {
     var replyText = null;
     isCreatingMeetingViaDialog = false;
-    switch (userIntent) {
-        case "action-email-create":
-            replyText = "Sorry.  Email creation is not supported.";
-            break;
+    console.log(userText + ": " + nlcResponse.top_class);
+    switch (nlcResponse.top_class) {
         case "action-meeting-create":
             isCreatingMeetingViaDialog = true;
             break;
+        case "respond-off-topic-joke-or-riddle":
+            replyText = JokesPipeline.nextJoke();
+            break;
+        case "respond-calculation-numeric":
+            replyText = CalculationPipeline.numericCalculation(userText);
+            break;
+        case "respond-calculation-conversion":
+            replyText = CalculationPipeline.conversionCalculation(userText);
+            break;
+        case "action-email-create":
+            replyText = "Sorry.  Email creation is not supported.";
+            break;
         case "action-task-create":
             replyText = "Sorry.  Task creation is not supported.";
-            break;
-        case "respond-off-topic-joke-or-riddle":
-            replyText = "Very funny.  Good to see you have a sense of humor";
             break;
         case "respond-off-topic-math":
             replyText = "Oops...my calculator's batteries are dead.";
@@ -317,31 +254,40 @@ function getReplyToIntent(userIntent)
 }
 
 function displayWatsonChat(text) {
-    $('<p class="chat-watson"/>')
-        .html($('<div/>').html(text).text())
+
+        $('<div class="bubble-watson"/>').html(text)
         .appendTo($conversation);
+    scrollToBottom();
+}
+
+function displayHumanChat(text) {
+
+    $('<p class="bubble-human"/>').html(text)
+        .appendTo($conversation);
+
+    $('<div class="clear-float"/>')
+        .appendTo($conversation);
+
     scrollToBottom();
 }
 
 function determineUserIntent(userIntentText) {
 
-    var params = {
-        userIntentText: userIntentText
-    };
+    var encodedText = encodeURIComponent(userIntentText);
+    $.get('/proxy/api/v1/classifiers/' + ipaNlcClassifier.classifier_id + '/classify?proxyType=nlc&text=' + encodedText)
+        .done(function(data) {
 
-    var path = '/nlcIntent';
-    $.post(path, params).done(function(data) {
-        var replyText = getReplyToIntent(data);
-        if (isCreatingMeetingViaDialog) {
-            handOffToDialog(userIntentText);
-        }else {
-            displayWatsonChat(replyText);
-            displayWatsonChat("Is there anything else I can help you with?");
-        }
-    }).fail(function(response){
-        displayWatsonChat("I'm unable to process your request at the moment.");
-    });
-
+            var replyText = getReplyToIntent(data, userIntentText);
+            if (isCreatingMeetingViaDialog) {
+                handOffToDialog(userIntentText);
+            }else {
+                displayWatsonChat(replyText);
+                displayWatsonChat("Is there anything else I can help you with?");
+            }
+        }).fail(function(response){
+            console.log("StatusCode (" + response.status + "): " + response.statusText);
+            displayWatsonChat("I'm unable to process your request at the moment.");
+        });
 }
 
 function scrollToBottom (){

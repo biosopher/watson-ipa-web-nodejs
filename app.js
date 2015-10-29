@@ -33,34 +33,33 @@ require('./config/express')(app);
 // if bluemix credentials exists, then override local
 var dialogCredentials =  extend({
     url: "https://gateway.watsonplatform.net/dialog/api",
-    username: "769a0689-b670-4d05-bad5-f32928bdfd54",
-    password: "cOqWEDuDsjab"
+    username: "<username>",
+    password: "<password>"
 }, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
 
 // if bluemix credentials exists, then override local
 var nlcCredentials =  extend({
     "url": "https://gateway.watsonplatform.net/natural-language-classifier/api",
-    "username": "da048475-654e-413d-bc02-43b27db22bc6",
-    "password": "0sknjUbIBiOe"
+    username: "<username>",
+    password: "<password>"
 }, bluemix.getServiceCreds('nlc')); // VCAP_SERVICES
-
-// Remove api as it will be passed from the web client
-if (dialogCredentials.url.indexOf('/api') > 0) {
-    dialogCredentials.url = dialogCredentials.url.substring(0, dialogCredentials.url.indexOf('/api'));
-}
 
 // HTTP proxy to the API
 app.use('/proxy', function(req, res) {
 
-    var username = req.params.proxyType ==  "nlc" ? nlcCredentials.username : dialogCredentials.username;
-    var password = req.params.proxyType ==  "nlc" ? nlcCredentials.password : dialogCredentials.password;
+    var credentials = req.query.proxyType ==  "nlc" ? nlcCredentials : dialogCredentials;
+
+    // Remove api as it will be passed from the web client
+    if (credentials.url.indexOf('/api') > 0) {
+        credentials.url = credentials.url.substring(0, credentials.url.indexOf('/api'));
+    }
 
     req.pipe(request({
-        url: dialogCredentials.url + req.url,
+        url: credentials.url + req.url,
         auth: {
-            user: username,
-            pass: password,
-            sendImmediately: true
+            user: credentials.username,
+            pass: credentials.password,
+            sendImmediately: true,
         }
     }, function(error){
         if (error)

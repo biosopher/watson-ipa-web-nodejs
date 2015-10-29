@@ -42,7 +42,7 @@
                                 <action varName="MeetingAttendee1" operator="SET_TO">{MeetingAttendee1.value:main}</action>
                                 <output>
                                     <prompt>
-                                        <item>I'll invite {MeetingAttendee1}</item>
+                                        <item>I'll invite {MeetingAttendee1}.</item>
                                     </prompt>
                                     <goto ref="output_2443160"/>
                                 </output>
@@ -54,7 +54,7 @@
                                 <action varName="MeetingAttendee1" operator="SET_TO">{MeetingAttendee1.value:main}</action>
                                 <output>
                                     <prompt>
-                                        <item>I'll invite your {MeetingAttendee1}</item>
+                                        <item>I'll invite your {MeetingAttendee1}.</item>
                                     </prompt>
                                     <goto ref="output_2443160"/>
                                 </output>
@@ -71,7 +71,7 @@
             </folder>
             <folder label="Meeting Time">
                 <output id="output_2443160">
-                    <prompt selectionType="RANDOM">
+                    <prompt>
                         <item>What time is your meeting?</item>
                     </prompt>
                     <getUserInput>
