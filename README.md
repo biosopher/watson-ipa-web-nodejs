@@ -21,7 +21,7 @@ These are the tasks we'll attempt to classify:
 
 [![Deploy to Bluemix](wiki/media/deploy_to_bluemix.png)](https://bluemix.net/deploy?repository=https://github.com/biosopher/watson-ipa-web-nodejs)
 
-### Getting Started
+#### Getting Started
 To act on our user's intent, we first need to classify it into one of our categories above.  To accomplish this, we'll rely on the [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) which uses deep machine learning techniques to return the top matching predefined classes for short text inputs.  We'll train the NLC using various text examples of users making the requests above.  
 
 Next, we'll need to ensure we have all the information required to complete the user's request.  To do this, we'll rely on the [Watson Dialog service](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/dialog.html) which supports building conversations between a user and an application. The Dialog service will track and store information obtained during the conversation until we have all the info required to complete the task. 
@@ -34,13 +34,13 @@ Follow these sections to setup your services and host your app either in Bluemix
 - [ ] [optional] [Running the app locally at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
 - [ ] [Exercises for you to complete](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Exercises-for-you-to-complete)
 
-### Supporting Sections
+#### Supporting Sections
 * [Obtaining Service Credentials from the Command Line](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Obtaining-Service-Credentials-from-the-Command-Line)
 * [Troubleshooting](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Troubleshooting)
 
-### More Details
+#### More Details
 For more details about developing applications that use Watson Developer Cloud services in Bluemix, see [Getting started with Watson Developer Cloud and Bluemix](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/getting_started/).
 
-### License
+#### License
 This sample code is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/watson-developer-cloud/natural-language-classifier-nodejs/blob/master/LICENSE).
 This sample uses [jquery](https://jquery.com/) which is MIT license.
