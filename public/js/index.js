@@ -16,9 +16,16 @@
 
 'use strict';
 
-var isCreatingMeetingViaDialog = false;
-var IPA_DIALOG_NAME = "ipa_demo";
-var IPA_CLASSIFIER_NAME = "ipa_demo";
+// Service names
+var IPA_DIALOG_NAME = "demo_ipa";
+var IPA_CLASSIFIER_NAME = "demo_ipa";
+
+// Intent Types
+var INTENT_TYPE_DIALOG_MEETING = "dialog_meeting";
+var INTENT_TYPE_DIALOG_SMS = "dialog_sms";
+var INTENT_TYPE_DIALOG_EMAIL = "dialog_email";
+
+var inviteType = null;
 var ipaDialog = null;
 var ipaNlcClassifier = null;
 var conversation = {};
@@ -30,7 +37,7 @@ var $dialogsError = $('.dialogs-error');
 var $conversationDiv = $('.conversation-div');
 var $conversation = $('.conversation-container');
 var $information = $('.information-container');
-var $profile = $('.profile-container');
+var $profileContainer = $('.profile-container');
 var $userInput = $('.user-input');
 
 // initial load
@@ -88,7 +95,7 @@ function retrieveClassifiers() {
 
             if (ipaNlcClassifier == null) {
                 $dialogsLoading.hide();
-                $dialogsError.find('.errorMsg').html('No classifier named "' + IPA_CLASSIFIER_NAME + '" found in the NLC service');
+                $dialogsError.find('.errorMsg').html('No NLC classifier named "' + IPA_CLASSIFIER_NAME + '" found in the NLC service');
                 $dialogsError.show();
             }else{
                 initConversation();
@@ -96,7 +103,7 @@ function retrieveClassifiers() {
         }).fail(function() {
             $dialogsLoading.hide();
             $dialogsError.show();
-            $dialogsError.find('.errorMsg').html('Error getting the dialogs.');
+            $dialogsError.find('.errorMsg').html('Error getting the NLC classifier.');
         })
 }
 
@@ -126,6 +133,11 @@ function initConversation() {
  * Let Watson Dialog Services help us out
  */
 function handOffToDialog(userIntentText) {
+
+    if (inviteType != null) {
+        // Use the invite type to redirect the Dialog flow to the current intent.
+        userIntentText = INTENT_TYPE_DIALOG_MEETING + " " + userIntentText;
+    }
 
     var path = '/proxy/api/v1/dialogs/' + conversation.dialog_id + '/conversation?proxyType=dialog';
     var params = {
@@ -159,10 +171,10 @@ function conductConversation(){
 
         displayHumanChat(userIntentText);
 
-        if (isCreatingMeetingViaDialog) {
-            handOffToDialog(userIntentText);
-        }else{
+        if (inviteType == null) {
             determineUserIntent(userIntentText);
+        }else{
+            handOffToDialog(userIntentText);
         }
     }
 }
@@ -178,10 +190,10 @@ function getProfile() {
     var timeFound = false;
     var dateFound = false;
     $.get(path, params).done(function(data) {
-        $profile.empty();
+        $profileContainer.empty();
         data.name_values.forEach(function(par) {
             if (par.value !== '') {
-                $('<div/>').text(par.name + ': ' + par.value).appendTo($profile);
+                $('<div/>').text(par.name + ': ' + par.value).appendTo($profileContainer);
                 if (par.name == "invite_attendee1") {
                     attendeeFound = true;
                 }else if (par.name == "invite_time") {
@@ -192,11 +204,11 @@ function getProfile() {
             }
         });
 
-        // Test if meeting ready to schedule
-        if (attendeeFound && timeFound && dateFound) {
-            // meetingReadyToSchedule = true;
-            // Process scheduling of meeting here
-            isCreatingMeetingViaDialog = false;
+        // Test if we have all required data for our intent and can reset the dialog.
+        if (inviteType != null)  {
+            if ((inviteType != INTENT_TYPE_DIALOG_MEETING && attendeeFound) || timeFound && dateFound) {
+                inviteType = null;
+            }
         }
     });
 }
@@ -204,11 +216,17 @@ function getProfile() {
 function getReplyToIntent(nlcResponse, userText)
 {
     var replyText = null;
-    isCreatingMeetingViaDialog = false;
+    inviteType = null;
     console.log(userText + ": " + nlcResponse.top_class);
     switch (nlcResponse.top_class) {
+        case "action-email-create":
+            inviteType = INTENT_TYPE_DIALOG_EMAIL;
+            break;
         case "action-meeting-create":
-            isCreatingMeetingViaDialog = true;
+            inviteType = INTENT_TYPE_DIALOG_MEETING;
+            break;
+        case "action-sms-create":
+            inviteType = INTENT_TYPE_DIALOG_SMS;
             break;
         case "respond-off-topic-joke-or-riddle":
             replyText = JokesPipeline.nextJoke();
@@ -278,11 +296,11 @@ function determineUserIntent(userIntentText) {
         .done(function(data) {
 
             var replyText = getReplyToIntent(data, userIntentText);
-            if (isCreatingMeetingViaDialog) {
-                handOffToDialog(userIntentText);
-            }else {
+            if (inviteType == null) {
                 displayWatsonChat(replyText);
                 displayWatsonChat("Is there anything else I can help you with?");
+            }else {
+                handOffToDialog(userIntentText);
             }
         }).fail(function(response){
             console.log("StatusCode (" + response.status + "): " + response.statusText);

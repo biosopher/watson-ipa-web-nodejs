@@ -13,11 +13,11 @@
                     <item>How else can I help you today?</item>
                 </prompt>
                 <getUserInput id="processUserRequest">
-                    <search ref="action_meeting_create_folder"/>
+                    <search ref="intents_supported_folder"/>
                     <default>
                         <output>
                             <prompt selectionType="RANDOM">
-                                <item>I'm sorry I did not understand your question, please try again.</item>
+                                <item>I'm unsure what you mean. Please try again.</item>
                             </prompt>
                         </output>
                     </default>
@@ -25,24 +25,33 @@
             </output>
         </folder>
         <folder label="Library">
-            <folder label="Live Content" id="action_meeting_create_folder">
+            <folder label="Live Content" id="intents_supported_folder">
                 <input>
                     <grammar>
-                        <item>intentMeeting $</item>
+                        <item>*</item>
                     </grammar>
+                    <action varName="var_invite_type" operator="SET_TO">invite_type_meeting</action>
                     <goto ref="output_invite_who"/>
                 </input>
                 <input>
                     <grammar>
-                        <item>itentEmail $</item>
+                        <item>dialog_meeting *</item>
                     </grammar>
+                    <action varName="var_invite_type" operator="SET_TO">invite_type_meeting</action>
                     <goto ref="output_invite_who"/>
                 </input>
                 <input>
                     <grammar>
-                        <item>intentSms $</item>
+                        <item>dialog_email *</item>
                     </grammar>
-                    <action varName="var_invite_type" operator="SET_TO">""</action>
+                    <action varName="var_invite_type" operator="SET_TO">invite_type_email</action>
+                    <goto ref="output_invite_who"/>
+                </input>
+                <input>
+                    <grammar>
+                        <item>dialog_sms *</item>
+                    </grammar>
+                    <action varName="var_invite_type" operator="SET_TO">invite_type_sms</action>
                     <goto ref="output_invite_who"/>
                 </input>
             </folder>
@@ -174,8 +183,9 @@
     </constants>
     <variables>
         <var_folder name="Home">
+            <var name="var_invite_type" type="TEXT" description="First person to invite to the meeting"/>
             <var name="var_invite_attendee1" type="TEXT" description="First person to invite to the meeting"/>
-            <var name="MeetingAttendee2" type="TEXT" description="Second person to invite to the meeting"/>
+            <var name="var_invite_attendee2" type="TEXT" description="Second person to invited to the meeting"/>
             <var name="var_invite_date" type="TEXT" description="Date for the meeting"/>
             <var name="var_invite_time" type="TEXT" description="Time for the meeting"/>
         </var_folder>
