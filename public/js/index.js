@@ -182,11 +182,11 @@ function getProfile() {
         data.name_values.forEach(function(par) {
             if (par.value !== '') {
                 $('<div/>').text(par.name + ': ' + par.value).appendTo($profile);
-                if (par.name == "MeetingAttendee1") {
+                if (par.name == "invite_attendee1") {
                     attendeeFound = true;
-                }else if (par.name == "MeetingTime") {
+                }else if (par.name == "invite_time") {
                     timeFound = true;
-                }else if (par.name == "MeetingDate") {
+                }else if (par.name == "invite_date") {
                     dateFound = true;
                 }
             }
