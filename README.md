@@ -28,11 +28,11 @@ To act on our user's intent, we first need to classify it into one of our catego
 Next, we'll need to ensure we have all the information required to complete the user's request.  To do this, we'll rely on the [Watson Dialog service](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/dialog.html) which supports building conversations between a user and an application. The Dialog service will track and store information obtained during the conversation until we have all the info required to complete the task. 
 
 Follow these sections to setup your services and host your app either in Bluemix or locally.
-- [ ] [Setup Watson Natural Language Classifier and Dialog services on Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Setup-Watson-Natural-Language-Classifier-and-Dialog-services-on-Bluemix)
-- [ ] [Train the Natural Language Classifier service](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Train-the-Natural-Language-Classifier-service)
-- [ ] [Configure your Dialog service with IBM's Dialog XML](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Configure-your-Dialog-service-with-IBM's-Dialog-XML)
-- [ ] [Push app to Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Push-App-to-Bluemix) 
-- [ ] [optional] [Running the app locally at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
+- [ ] [Step 1: Setup Watson Natural Language Classifier and Dialog services on Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Setup-Watson-Natural-Language-Classifier-and-Dialog-services-on-Bluemix)
+- [ ] [Step 2: Train the Natural Language Classifier service](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Train-the-Natural-Language-Classifier-service)
+- [ ] [Step 3: Configure your Dialog service with IBM's Dialog XML](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Configure-your-Dialog-service-with-IBM's-Dialog-XML)
+- [ ] [Step 4: Push app to Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Push-App-to-Bluemix) 
+- [ ] [Optional Step] [Running the app locally at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
 - [ ] [Exercises for you to complete](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Exercises-for-you-to-complete)
 
 #### Supporting Sections
