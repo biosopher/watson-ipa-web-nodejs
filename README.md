@@ -33,7 +33,7 @@ Follow these sections to setup your services and host your app either in Bluemix
 - [ ] [Step 3: Configure your Dialog service with IBM's Dialog XML](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Configure-your-Dialog-service-with-IBM's-Dialog-XML)
 - [ ] [Step 4: Push app to Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Push-App-to-Bluemix) 
 - [ ] [Step 5 (optional): Running the app locally at http://localhost:300](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Running-Locally)
-- [ ] [Step 6: Additional exercises for you to complete](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Exercises-for-you-to-complete)
+- [ ] [Step 6: Additional exercises for you to improve the app's functionality](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Exercises-for-you-to-complete)
 
 #### Supporting Sections
 * [Obtaining Service Credentials from the Command Line](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Obtaining-Service-Credentials-from-the-Command-Line)
