@@ -24,15 +24,8 @@
                 </getUserInput>
             </output>
         </folder>
-        <folder label="Library">
+        <folder label="library_intents">
             <folder label="Live Content" id="intents_supported_folder">
-                <input>
-                    <grammar>
-                        <item>*</item>
-                    </grammar>
-                    <action varName="var_invite_type" operator="SET_TO">invite_type_meeting</action>
-                    <goto ref="output_invite_who"/>
-                </input>
                 <input>
                     <grammar>
                         <item>dialog_meeting *</item>
@@ -161,9 +154,13 @@
     <entities>
         <entity name="contact_friends">
             <value name="Anthony" value="Anthony"/>
+            <value name="Keith" value="Kelly"/>
             <value name="Kelly" value="Kelly"/>
+            <value name="Laura" value="Tina"/>
             <value name="Ryan" value="Ryan"/>
+            <value name="Teresa" value="Tina"/>
             <value name="Tina" value="Tina"/>
+            <value name="Watson" value="Kelly"/>
         </entity>
         <entity name="contact_family">
             <value name="mother" value="mother"/>

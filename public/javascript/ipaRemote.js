@@ -28,7 +28,7 @@ var INTENT_TYPE_DIALOG_EMAIL = "dialog_email";
 var inviteType = null;
 var ipaDialog = null;
 var ipaNlcClassifier = null;
-var conversation = {};
+var conversation = null;
 
 var $dialogsLoading = $('.dialogs-loading');
 var $dialogsError = $('.dialogs-error');
@@ -109,6 +109,9 @@ function retrieveClassifiers() {
 
 function initConversation() {
 
+    conversation = {};
+    conversation.user = [];
+    conversation.watson = [];
     $.post('/proxy/api/v1/dialogs/' + ipaDialog.dialog_id + '/conversation?proxyType=dialog', {input: ''})
         .done(function(data) {
             $conversation.empty();
@@ -129,6 +132,29 @@ function initConversation() {
         });
 }
 
+function saveConversation(watsonReply) {
+
+    // Update conversation store
+    conversation.user[conversation.user.length] = $userInput.val();
+    conversation.watson[conversation.watson.length] = watsonReply;
+    $userInput.val('').focus();
+
+    var conversationJson = JSON.stringify(conversation);
+    $.ajax( {
+        url: '/saveConversation',
+        type: 'POST',
+        data: conversationJson,
+        contentType: 'application/json',
+        processData: false,
+        success: function (response) {
+            console.log("conversationJson sent to server");
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log("Error: " + xhr.status + "\n" + xhr.responseText + "\n" + JSON.stringify(thrownError));
+        }
+    } );
+}
+
 /**
  * Let Watson Dialog Services help us out
  */
@@ -147,10 +173,11 @@ function handOffToDialog(userIntentText) {
     };
 
     $.post(path, params).done(function(data) {
-        var text = data.response.join('<br/>');
-        displayWatsonChat(text);
+        var replyText = data.response.join('<br/>');
+        displayWatsonChat(replyText);
 
         getProfile();
+        saveConversation(replyText);
         scrollToBottom();
     }).fail(function(response){
         displayWatsonChat("I'm unable to process your request at the moment.");
@@ -161,14 +188,12 @@ function handOffToDialog(userIntentText) {
 /**
  * Determine how we should respond
  */
-function conductConversation(){
+function conductConversation() {
 
     var userIntentText = $userInput.val();
     if (userIntentText == "") {
         displayWatsonChat("Please speak up.  I can't hear you");
     }else{
-        $userInput.val('').focus();
-
         displayHumanChat(userIntentText);
 
         if (inviteType == null) {
@@ -299,6 +324,7 @@ function determineUserIntent(userIntentText) {
             if (inviteType == null) {
                 displayWatsonChat(replyText);
                 displayWatsonChat("Is there anything else I can help you with?");
+                saveConversation(replyText);
             }else {
                 handOffToDialog(userIntentText);
             }

@@ -17,29 +17,33 @@
 'use strict';
 
 var CalculationPipeline = new Object();
-
+var ERR_MESSAGE = "I'm unable to perform calculations of that type.";
 CalculationPipeline.numericCalculation= function(calculationStr) {
 
-    var result;
+    var result = ERR_MESSAGE;
     try {
         // For security and possibly additional text, strip anything other than digits, (), -+/* and .
         calculationStr = calculationStr.replace(/[^-()\d/*/^+.]/g, '');
-        result = math.eval(calculationStr);
-        result = math.format(result,3);
+        if (calculationStr.length > 0) {
+            result = math.eval(calculationStr);
+            if (result != undefined) {
+                result = math.format(result, 3);
+            }
+        }
     } catch(err) {
-        result = "I'm unable to perform a calculation of that type.";
     }
     return result;
 }
 
 CalculationPipeline.conversionCalculation= function(calculationStr) {
-    var result;
+    var result = ERR_MESSAGE;;
     try {
         // SHOULD BE MORE SECURE!  See the String.replace() in numericCalculation()
         var conversion = math.eval(calculationStr);
-        result = math.format(conversion,3);
+        if (conversion != undefined) {
+            result = math.format(conversion,3);
+        }
     } catch(err) {
-        result = "I'm unable to perform a calculation of that type.";
     }
     return result;
 }

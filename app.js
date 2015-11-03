@@ -21,11 +21,14 @@ app         = express(),
 request     = require('request'),
 bluemix     = require('./config/bluemix'),
 extend      = require('util')._extend,
-url         = require('url'),
+bodyParser = require('body-parser'),
 https       = require('https'),
 fs          = require('fs'),
 FormData    = require('form-data'),
-Q           = require('q'); // for deferred requests
+Q           = require('q'), // for deferred requests
+conversationStore = require('./javascript/ConversationStore');
+
+app.use(bodyParser.json()); // support json encoded bodies
 
 // Bootstrap application settings
 require('./config/express')(app);
@@ -33,15 +36,15 @@ require('./config/express')(app);
 // if bluemix credentials exists, then override local
 var dialogCredentials =  extend({
     url: "https://gateway.watsonplatform.net/dialog/api",
-    username: "769a0689-b670-4d05-bad5-f32928bdfd54",
-    password: "cOqWEDuDsjab"
+    username: "0cc5994e-2728-417b-9f5f-4bc67ff74419",
+    password: "HEn1Rt5vUC7R"
 }, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
 
 // if bluemix credentials exists, then override local
 var nlcCredentials =  extend({
     "url": "https://gateway.watsonplatform.net/natural-language-classifier/api",
-    "username": "da048475-654e-413d-bc02-43b27db22bc6",
-    "password": "0sknjUbIBiOe"
+    "username": "5e6d050f-99a8-41d8-a692-c595177dcf2d",
+    "password": "27p1YTCuCUOW"
 }, bluemix.getServiceCreds('nlc')); // VCAP_SERVICES
 
 // HTTP proxy to the API
@@ -62,9 +65,18 @@ app.use('/proxy', function(req, res) {
             sendImmediately: true,
         }
     }, function(error){
-        if (error)
+        if (error) {
             res.status(500).json({code: 500, error: errorMessage});
+        }
     })).pipe(res);
+});
+
+// Pass user text to NLC to identify intent
+app.post('/saveConversation', function(req, res) {
+
+    conversationStore.storeConversation(req.body);
+    res.status(200);
+    res.end();
 });
 
 // render index page
