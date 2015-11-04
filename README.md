@@ -2,10 +2,10 @@
 ![](wiki/media/demo_screenshot.png)
 An [intelligent personal assistant](https://en.wikipedia.org/wiki/Intelligent_personal_assistant) is a software agent that can perform tasks or services for an individual.  In this demo, we'll combine two Watson services to illustrate the basics of intelligent task performance:
 
-1. Capture user input.
-2. Classify this input into one of several supported tasks
-3. Ask users for any additional information required to complete the task
-4. Execute the task for the user (an exercise left for you to complete)
+A. Capture user input.
+B. Classify this input into one of several supported tasks
+C. Ask users for any additional information required to complete the task
+D. Execute the task for the user (an exercise left for you to complete)
 
 ![](wiki/media/demo_architecture.png)
 
@@ -13,10 +13,8 @@ These are the tasks we'll attempt to classify:
 
 * Schedule a meeting
 * Send an email
-* Set an alarm
 * Ask to perform a numeric calculations
 * Request a joke
-* Off-topic
 
 #### How Does the Demo Work
 Curious to know how the user text is classified to a specific intent and then mapped to a dialog flow?  Here's a brief overview of [how the Watson IPA Demo works?](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/How-Does-the-Watson-IPA-Demo-Work).
