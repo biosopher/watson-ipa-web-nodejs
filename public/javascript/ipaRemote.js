@@ -21,11 +21,11 @@ var IPA_DIALOG_NAME = "demo_ipa";
 var IPA_CLASSIFIER_NAME = "demo_ipa";
 
 // Intent Types
-var INTENT_TYPE_DIALOG_MEETING = "dialog_meeting";
-var INTENT_TYPE_DIALOG_SMS = "dialog_sms";
-var INTENT_TYPE_DIALOG_EMAIL = "dialog_email";
+var INTENT_TYPE_DIALOG_EMAIL = "action-email-create";
+var INTENT_TYPE_DIALOG_MEETING = "action-meeting-create";
+var INTENT_TYPE_DIALOG_SMS = "action-sms-create";
 
-var inviteType = null;
+var intentType = null;
 var ipaDialog = null;
 var ipaNlcClassifier = null;
 var conversation = null;
@@ -98,7 +98,7 @@ function retrieveClassifiers() {
                 $dialogsError.find('.errorMsg').html('No NLC classifier named "' + IPA_CLASSIFIER_NAME + '" found in the NLC service');
                 $dialogsError.show();
             }else{
-                initConversation();
+                initConversation(true);
             }
         }).fail(function() {
             $dialogsLoading.hide();
@@ -107,14 +107,24 @@ function retrieveClassifiers() {
         })
 }
 
-function initConversation() {
+function initConversation(isFirstConversation) {
 
+    intentType = null;
     conversation = {};
-    conversation.user = [];
-    conversation.watson = [];
-    $.post('/proxy/api/v1/dialogs/' + ipaDialog.dialog_id + '/conversation?proxyType=dialog', {input: ''})
+    conversation.user = {};
+    conversation.watson = {};
+    conversation.user.inputs = [];
+    conversation.user.intents = [];
+    conversation.watson.replies = [];
+
+    var conversationStartText = "";
+    if (!isFirstConversation) {
+        // Results in different starting text for dialog.  E.g. "What else can I help with?" vs "Hello! How can I help you?".
+        conversationStartText = "DIALOG_START_OVER";
+    }
+    $.post('/proxy/api/v1/dialogs/' + ipaDialog.dialog_id + '/conversation?proxyType=dialog', {input: conversationStartText})
         .done(function(data) {
-            $conversation.empty();
+            //$conversation.empty();
             $information.empty();
             $dialogsLoading.hide();
 
@@ -132,12 +142,12 @@ function initConversation() {
         });
 }
 
-function saveConversation(watsonReply) {
+function saveConversation(userIntentText,userIntentType,watsonReply) {
 
     // Update conversation store
-    conversation.user[conversation.user.length] = $userInput.val();
-    conversation.watson[conversation.watson.length] = watsonReply;
-    $userInput.val('').focus();
+    conversation.user.inputs[conversation.user.inputs.length] = userIntentText;
+    conversation.user.intents[conversation.user.intents.length] = userIntentType;
+    conversation.watson.replies[conversation.watson.replies.length] = watsonReply;
 
     var conversationJson = JSON.stringify(conversation);
     $.ajax( {
@@ -160,24 +170,35 @@ function saveConversation(watsonReply) {
  */
 function handOffToDialog(userIntentText) {
 
-    if (inviteType != null) {
+    var dialogInput = userIntentText;
+    if (isDialogRequiredIntent()) {
         // Use the invite type to redirect the Dialog flow to the current intent.
-        userIntentText = INTENT_TYPE_DIALOG_MEETING + " " + userIntentText;
+        dialogInput = intentType + " " + userIntentText;
     }
 
     var path = '/proxy/api/v1/dialogs/' + conversation.dialog_id + '/conversation?proxyType=dialog';
     var params = {
-        input: userIntentText,
+        input: dialogInput,
         conversation_id: conversation.conversation_id,
         client_id: conversation.client_id
     };
 
     $.post(path, params).done(function(data) {
         var replyText = data.response.join('<br/>');
-        displayWatsonChat(replyText);
 
+        // Determine if current dialog completed
+        var index = replyText.indexOf("DIALOG_COMPLETED");
+        var dialogCompleted = index >= 0;
+        if (dialogCompleted) {
+            replyText = replyText.substring(0,index-5); // also remove the "<br/>"
+        }
+        displayWatsonChat(replyText);
         getProfile();
-        saveConversation(replyText);
+        saveConversation(userIntentText,intentType,replyText);
+
+        if (dialogCompleted) {
+            initConversation(false);
+        }
         scrollToBottom();
     }).fail(function(response){
         displayWatsonChat("I'm unable to process your request at the moment.");
@@ -191,15 +212,16 @@ function handOffToDialog(userIntentText) {
 function conductConversation() {
 
     var userIntentText = $userInput.val();
+    $userInput.val('').focus();
     if (userIntentText == "") {
         displayWatsonChat("Please speak up.  I can't hear you");
     }else{
         displayHumanChat(userIntentText);
 
-        if (inviteType == null) {
-            determineUserIntent(userIntentText);
-        }else{
+        if (isDialogRequiredIntent()) {
             handOffToDialog(userIntentText);
+        }else{
+            determineUserIntent(userIntentText);
         }
     }
 }
@@ -211,7 +233,7 @@ function getProfile() {
         client_id: conversation.client_id
     };
 
-    var attendeeFound = false;
+    var attendee1Found = false;
     var timeFound = false;
     var dateFound = false;
     $.get(path, params).done(function(data) {
@@ -219,39 +241,22 @@ function getProfile() {
         data.name_values.forEach(function(par) {
             if (par.value !== '') {
                 $('<div/>').text(par.name + ': ' + par.value).appendTo($profileContainer);
-                if (par.name == "invite_attendee1") {
-                    attendeeFound = true;
-                }else if (par.name == "invite_time") {
-                    timeFound = true;
-                }else if (par.name == "invite_date") {
-                    dateFound = true;
-                }
             }
         });
-
-        // Test if we have all required data for our intent and can reset the dialog.
-        if (inviteType != null)  {
-            if ((inviteType != INTENT_TYPE_DIALOG_MEETING && attendeeFound) || timeFound && dateFound) {
-                inviteType = null;
-            }
-        }
     });
 }
 
 function getReplyToIntent(nlcResponse, userText)
 {
     var replyText = null;
-    inviteType = null;
+    intentType = nlcResponse.top_class;
     console.log(userText + ": " + nlcResponse.top_class);
-    switch (nlcResponse.top_class) {
-        case "action-email-create":
-            inviteType = INTENT_TYPE_DIALOG_EMAIL;
+    switch (intentType) {
+        case INTENT_TYPE_DIALOG_EMAIL:
             break;
-        case "action-meeting-create":
-            inviteType = INTENT_TYPE_DIALOG_MEETING;
+        case INTENT_TYPE_DIALOG_MEETING:
             break;
-        case "action-sms-create":
-            inviteType = INTENT_TYPE_DIALOG_SMS;
+        case INTENT_TYPE_DIALOG_SMS:
             break;
         case "respond-off-topic-joke-or-riddle":
             replyText = JokesPipeline.nextJoke();
@@ -314,6 +319,10 @@ function displayHumanChat(text) {
     scrollToBottom();
 }
 
+function isDialogRequiredIntent() {
+    return intentType == INTENT_TYPE_DIALOG_EMAIL || intentType == INTENT_TYPE_DIALOG_MEETING || intentType == INTENT_TYPE_DIALOG_SMS;
+}
+
 function determineUserIntent(userIntentText) {
 
     var encodedText = encodeURIComponent(userIntentText);
@@ -321,12 +330,12 @@ function determineUserIntent(userIntentText) {
         .done(function(data) {
 
             var replyText = getReplyToIntent(data, userIntentText);
-            if (inviteType == null) {
+            if (isDialogRequiredIntent()) {
+                handOffToDialog(userIntentText);
+            }else {
                 displayWatsonChat(replyText);
                 displayWatsonChat("Is there anything else I can help you with?");
-                saveConversation(replyText);
-            }else {
-                handOffToDialog(userIntentText);
+                saveConversation(userIntentText,intentType,replyText);
             }
         }).fail(function(response){
             console.log("StatusCode (" + response.status + "): " + response.statusText);

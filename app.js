@@ -102,7 +102,7 @@ app.use(function(err, req, res, next) {
         error: err.message || err.error || errorMessage
     };
 
-    console.log('error:', error);
+    console.log('error: ' + JSON.stringify(error) + " for url: " + req.url);
     res.status(error.code).json(error);
 });
 

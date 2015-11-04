@@ -45,47 +45,41 @@ var conversationsDB;
 var cloudantService = cloudant({account:cloudantCredentials.username, password:cloudantCredentials.password});
 cloudantService.db.list(function(err, allDbs) {
 
+    //destroyDatabase();
     for (var i = 0; i < allDbs.length; i++) {
         if (allDbs[0] == CONVERSATIONS_DATABASE) {
             conversationsDB = cloudantService.db.use(CONVERSATIONS_DATABASE)
             console.log('Cloudant database ready');
             return;
         }
+     createDatabase();
     }
-
-    cloudantService.db.create(CONVERSATIONS_DATABASE, function(err) {
-        if (err) {
-            console.log('Failure to create the cloudant database', JSON.stringify(err));
-        } else {
-            conversationsDB = cloudantService.db.use(CONVERSATIONS_DATABASE)
-            console.log('Created Cloudant database');
-        }
-    });
 });
 
-exports.storeConversation = function(conversationJson) {
+exports.storeConversation = function(conversationObj) {
 
     if (conversationsDB) { // Hack for now as database creation can take awhile the first time the app is launched
-        conversationJson._id = conversationJson.dialog_id + "_" + conversationJson.conversation_id;
-        conversationsDB.insert(conversationJson,function(err, body, header) {
+        conversationObj._id = conversationObj.dialog_id + "_" + conversationObj.conversation_id;
+        conversationsDB.insert(conversationObj,function(err, body, header) {
             if (err) {
-                updateConversation(conversationJson);
+                updateConversation(conversationObj);
             }else{
+                var conversationJson = JSON.stringify(conversationObj, null, 2);
                 console.log('Inserted conversation: ' + conversationJson);
             }
         });
     }
 }
 
-function updateConversation(conversationJson) {
+function updateConversation(conversationObj) {
 
-    conversationsDB.get(conversationJson._id,{ revs_info: true },function(err, body, header) {
+    conversationsDB.get(conversationObj._id,{ revs_info: true },function(err, body, header) {
         if (err) {
             console.log('conversationsDB.get failed', JSON.stringify(err));
-            module.exports.storeConversation(conversationJson);
+            module.exports.storeConversation(conversationObj);
         }else{
-            conversationJson._rev = body._rev;
-            module.exports.storeConversation(conversationJson);
+            conversationObj._rev = body._rev;
+            module.exports.storeConversation(conversationObj);
         }
     });
 }
@@ -105,3 +99,21 @@ exports.printConversations = function() {
         }
     });
 }
+
+function createDatabase() {
+    cloudantService.db.create(CONVERSATIONS_DATABASE, function(err) {
+        if (err) {
+            console.log('Failure to create the cloudant database', JSON.stringify(err));
+        } else {
+            conversationsDB = cloudantService.db.use(CONVERSATIONS_DATABASE)
+            console.log('Created Cloudant database');
+        }
+    });
+}
+
+function destroyDatabase() {
+    cloudantService.db.destroy(CONVERSATIONS_DATABASE, function(err) {
+        createDatabase();
+    });
+}
+

@@ -2,80 +2,114 @@
 <dialog xsi:noNamespaceSchemaLocation="WatsonDialogDocument_1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <flow>
         <folder label="Main">
+            <input>
+                <grammar>
+                    <item>DIALOG_START_OVER</item>
+                </grammar>
+                <output>
+                    <prompt>
+                        <item>What else can I help you with?</item>
+                    </prompt>
+                    <goto ref="processUserRequest"/>
+                </output>
+            </input>
             <output>
                 <prompt>
                     <item>Hello, how can I help you?</item>
                 </prompt>
                 <goto ref="processUserRequest"/>
             </output>
-            <output ref="processNextUserRequest">
+            <output id="processNextUserRequest">
                 <prompt>
-                    <item>How else can I help you today?</item>
+                    <item>DIALOG_COMPLETED</item>
                 </prompt>
-                <getUserInput id="processUserRequest">
-                    <search ref="intents_supported_folder"/>
-                    <default>
-                        <output>
-                            <prompt selectionType="RANDOM">
-                                <item>I'm unsure what you mean. Please try again.</item>
-                            </prompt>
-                        </output>
-                    </default>
-                </getUserInput>
+                <goto ref="processUserRequest"/>
             </output>
-        </folder>
-        <folder label="library_intents">
-            <folder label="Live Content" id="intents_supported_folder">
-                <input>
-                    <grammar>
-                        <item>dialog_meeting *</item>
-                    </grammar>
-                    <action varName="var_invite_type" operator="SET_TO">invite_type_meeting</action>
-                    <goto ref="output_invite_who"/>
-                </input>
-                <input>
-                    <grammar>
-                        <item>dialog_email *</item>
-                    </grammar>
-                    <action varName="var_invite_type" operator="SET_TO">invite_type_email</action>
-                    <goto ref="output_invite_who"/>
-                </input>
-                <input>
-                    <grammar>
-                        <item>dialog_sms *</item>
-                    </grammar>
-                    <action varName="var_invite_type" operator="SET_TO">invite_type_sms</action>
-                    <goto ref="output_invite_who"/>
-                </input>
-            </folder>
-            <folder id="invite_who">
-                <output id="output_invite_who">
-                    <prompt>
-                        <item>Who should I invite to your meeting?</item>
-                    </prompt>
-                    <getUserInput>
+            <getUserInput id="processUserRequest">
+                <search ref="intents_supported_folder"/>
+                <default>
+                    <output>
+                        <prompt selectionType="RANDOM">
+                            <item>I'm unsure what you mean.</item>
+                        </prompt>
+                    </output>
+                </default>
+            </getUserInput>
+            <folder label="Library Intents">
+                <folder label="Live Content" id="intents_supported_folder">
+                    <input>
+                        <grammar>
+                            <item>action-meeting-create *</item>
+                        </grammar>
+                        <action varName="var-invite_type" operator="SET_TO">action-meeting-create</action>
+                        <output>
+                            <prompt>
+                                <item>Who should I invite to your meeting?</item>
+                            </prompt>
+                            <goto ref="user_input-who"/>
+                        </output>
+                    </input>
+                    <input>
+                        <grammar>
+                            <item>action-email-create *</item>
+                        </grammar>
+                        <action varName="var-invite_type" operator="SET_TO">action-email-create</action>
+                        <output>
+                            <prompt>
+                                <item>To whom should I send your email?</item>
+                            </prompt>
+                            <goto ref="user_input-who"/>
+                        </output>
+                    </input>
+                    <input>
+                        <grammar>
+                            <item>action-sms-create *</item>
+                        </grammar>
+                        <action varName="var-invite_type" operator="SET_TO">action-sms-create</action>
+                        <output>
+                            <prompt>
+                                <item>Who should I send your text message to?</item>
+                            </prompt>
+                            <goto ref="user_input-who"/>
+                        </output>
+                    </input>
+                </folder>
+                <folder id="invite_who">
+                    <getUserInput id="user_input-who">
                         <input>
                             <grammar>
-                                <item>$ (contact_friends)={var_invite_attendee1}</item>
+                                <item>$ (contact_friends)={var-invite_attendee1}</item>
                             </grammar>
-                            <action varName="var_invite_attendee1" operator="SET_TO">{var_invite_attendee1.value:main}</action>
+                            <action varName="var-invite_attendee1" operator="SET_TO">{var-invite_attendee1.value:main}</action>
                             <output>
                                 <prompt>
-                                    <item>I'll invite {var_invite_attendee1}.</item>
+                                    <item>I'll invite {var-invite_attendee1}.</item>
                                 </prompt>
-                                <goto ref="output_invite_time"/>
+                                <if>
+                                    <cond varName="var-invite_type" operator="EQUALS">action-meeting-create</cond>
+                                    <output>
+                                        <goto ref="output_invite_time"/>
+                                    </output>
+                                </if>
+                                <goto ref="processNextUserRequest"/>
                             </output>
                         </input>
                         <input>
                             <grammar>
-                                <item>$ (contact_family)={var_invite_attendee1}</item>
+                                <item>$ (contact_family)={var-invite_attendee1}</item>
                             </grammar>
-                            <action varName="var_invite_attendee1" operator="SET_TO">{var_invite_attendee1.value:main}</action>
+                            <action varName="var-invite_attendee1" operator="SET_TO">{var-invite_attendee1.value:main}</action>
                             <output>
                                 <prompt>
-                                    <item>I'll invite your {var_invite_attendee1}.</item>
+                                    <item>I'll invite your {var-invite_attendee1}.</item>
                                 </prompt>
-                                <goto ref="output_invite_time"/>
+                                <if>
+                                    <cond varName="var-invite_type" operator="EQUALS">action-meeting-create</cond>
+                                    <output>
+                                        <goto ref="output_invite_time"/>
+                                    </output>
+                                </if>
+                                <goto ref="processNextUserRequest"/>
                             </output>
                         </input>
                         <output>
@@ -85,70 +119,70 @@
                             <goto ref="output_invite_who"/>
                         </output>
                     </getUserInput>
-                </output>
-            </folder>
-            <folder label="Invite Time">
-                <output id="output_invite_time">
-                    <prompt>
-                        <item>What time is your meeting?</item>
-                    </prompt>
-                    <getUserInput>
-                        <input>
-                            <grammar>
-                                <item>$ (DATE_TIME_RANGE)={var_invite_time}</item>
-                            </grammar>
-                            <action varName="var_invite_time" operator="SET_TO">{var_invite_time.value:FROM_TIME}</action>
-                            <goto ref="output_invite_date"/>
-                        </input>
-                        <output>
-                            <prompt>
-                                <item>I'll need a valid time to continue.</item>
-                            </prompt>
-                            <goto ref="output_invite_time"/>
-                        </output>
-                    </getUserInput>
-                </output>
-            </folder>
-            <folder label="Meeting Date">
-                <output id="output_invite_date">
-                    <prompt>
-                        <item>What is the date for your meeting?</item>
-                    </prompt>
-                    <getUserInput>
-                        <input>
-                            <grammar>
-                                <item>$ (DATE_TIME_RANGE)={var_invite_date}</item>
-                            </grammar>
-                            <action varName="var_invite_date" operator="SET_TO">{var_invite_date.value:FROM_DATE}</action>
+                </folder>
+                <folder label="Invite Time">
+                    <output id="output_invite_time">
+                        <prompt>
+                            <item>What time is your meeting?</item>
+                        </prompt>
+                        <getUserInput>
+                            <input>
+                                <grammar>
+                                    <item>$ (DATE_TIME_RANGE)={var-invite_time}</item>
+                                </grammar>
+                                <action varName="var-invite_time" operator="SET_TO">{var-invite_time.value:FROM_TIME}</action>
+                                <goto ref="output_invite_date"/>
+                            </input>
                             <output>
                                 <prompt>
-                                    <item>
-                                        I've invited {var_invite_attendee1} to your meeting at {var_invite_time} on {var_invite_date}.
-                                    </item>
+                                    <item>I'll need a valid time to continue.</item>
                                 </prompt>
-                                <goto ref="processNextUserRequest"/>
+                                <goto ref="output_invite_time"/>
                             </output>
-                        </input>
-                        <output>
-                            <prompt>
-                                <item>I'll need a valid date to continue.</item>
-                            </prompt>
-                            <goto ref="output_invite_date"/>
-                        </output>
-                    </getUserInput>
-                </output>
+                        </getUserInput>
+                    </output>
+                </folder>
+                <folder label="Meeting Date">
+                    <output id="output_invite_date">
+                        <prompt>
+                            <item>What is the date for your meeting?</item>
+                        </prompt>
+                        <getUserInput>
+                            <input>
+                                <grammar>
+                                    <item>$ (DATE_TIME_RANGE)={var-invite_date}</item>
+                                </grammar>
+                                <action varName="var-invite_date" operator="SET_TO">{var-invite_date.value:FROM_DATE}</action>
+                                <output>
+                                    <prompt>
+                                        <item>
+                                            I've invited {var-invite_attendee1} to your meeting at {var-invite_time} on {var-invite_date}.
+                                        </item>
+                                    </prompt>
+                                </output>
+                                <goto ref="processNextUserRequest"/>
+                            </input>
+                            <output>
+                                <prompt>
+                                    <item>I'll need a valid date to continue.</item>
+                                </prompt>
+                                <goto ref="output_invite_date"/>
+                            </output>
+                        </getUserInput>
+                    </output>
+                </folder>
+                <folder label="Storage"/>
             </folder>
-            <folder label="Storage"/>
-        </folder>
-        <folder label="Global"/>
-        <folder label="Concepts">
-            <concept>
-                <grammar>
-                    <item>IPA</item>
-                    <item>Intelligent Agent</item>
-                    <item>Intelligent Personal Agent</item>
-                </grammar>
-            </concept>
+            <folder label="Global"/>
+            <folder label="Concepts">
+                <concept>
+                    <grammar>
+                        <item>IPA</item>
+                        <item>Intelligent Agent</item>
+                        <item>Intelligent Personal Agent</item>
+                    </grammar>
+                </concept>
+            </folder>
         </folder>
     </flow>
     <entities>
@@ -180,11 +214,11 @@
     </constants>
     <variables>
         <var_folder name="Home">
-            <var name="var_invite_type" type="TEXT" description="First person to invite to the meeting"/>
-            <var name="var_invite_attendee1" type="TEXT" description="First person to invite to the meeting"/>
-            <var name="var_invite_attendee2" type="TEXT" description="Second person to invited to the meeting"/>
-            <var name="var_invite_date" type="TEXT" description="Date for the meeting"/>
-            <var name="var_invite_time" type="TEXT" description="Time for the meeting"/>
+            <var name="var-invite_type" type="TEXT" description="First person to invite to the meeting"/>
+            <var name="var-invite_attendee1" type="TEXT" description="First person to invite to the meeting"/>
+            <var name="var-invite_attendee2" type="TEXT" description="Second person to invited to the meeting"/>
+            <var name="var-invite_date" type="TEXT" description="Date for the meeting"/>
+            <var name="var-invite_time" type="TEXT" description="Time for the meeting"/>
         </var_folder>
     </variables>
     <settings>
