@@ -26,7 +26,7 @@ https       = require('https'),
 fs          = require('fs'),
 FormData    = require('form-data'),
 Q           = require('q'), // for deferred requests
-conversationStore = require('./javascript/ConversationStore');
+//conversationStore = require('./javascript/ConversationStore');
 
 app.use(bodyParser.json()); // support json encoded bodies
 
@@ -74,7 +74,7 @@ app.use('/proxy', function(req, res) {
 // Pass user text to NLC to identify intent
 app.post('/saveConversation', function(req, res) {
 
-    conversationStore.storeConversation(req.body);
+    //conversationStore.storeConversation(req.body);
     res.status(200);
     res.end();
 });
