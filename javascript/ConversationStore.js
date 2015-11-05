@@ -50,7 +50,10 @@ cloudantService.db.list(function(err, allDbs) {
 
 exports.storeConversation = function(conversationObj) {
 
-    if (conversationsDB) { // Hack for now as database creation can take awhile the first time the app is launched
+    // if{} here has two effects:
+    // 1. Avoid errors if cloudant service not enabled
+    // 2. database creation can take awhile first time app launches so prevent errors
+    if (conversationsDB) {
         conversationObj._id = conversationObj.dialog_id + "_" + conversationObj.conversation_id;
         conversationsDB.insert(conversationObj,function(err, body, header) {
             if (err) {

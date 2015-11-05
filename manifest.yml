@@ -1,10 +1,10 @@
 declared-services:
   ipa-dialog_service:
     label: dialog
-    plan: ecosystem
+    plan: standard
   ipa-nlc_service:
     label: natural_language_classifier
-    plan: ecosystem
+    plan: standard
 #  ipa-cloudant_service:
 #    label: cloudantNoSQLDB
 #    plan: Shared
