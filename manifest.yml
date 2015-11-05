@@ -5,15 +5,15 @@ declared-services:
   ipa-nlc_service:
     label: natural_language_classifier
     plan: ecosystem
-  ipa-cloudant_service
-    label: cloudantNoSQLDB
-    plan: Shared
+#  ipa-cloudant_service:
+#    label: cloudantNoSQLDB
+#    plan: Shared
 applications:
 - services:
   - ipa-nlc_service
   - ipa-dialog_service
-  - ipa-cloudant_service
-  name: ipa-demo-anthony
+#  - ipa-cloudant_service
+  name: ipa_demo-anthony
   command: node app.js
   path: .
   memory: 512M

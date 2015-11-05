@@ -26,34 +26,26 @@ var CONVERSATIONS_DATABASE = 'ipa_conversations';
 // if bluemix credentials exists, then override local
 var cloudantCredentials =  extend({
     url: "https://cd27023a-13b8-4e54-b65c-da92c09e1be9-bluemix:67c20ddada4d3f10b6fee20be87314f7c044cafb9429c7e21f82d3731784da68@cd27023a-13b8-4e54-b65c-da92c09e1be9-bluemix.cloudant.com",
-    username: "cd27023a-13b8-4e54-b65c-da92c09e1be9-bluemix",
-    password: "67c20ddada4d3f10b6fee20be87314f7c044cafb9429c7e21f82d3731784da68"
-}, bluemix.getServiceCreds('CloudantNoSQLDB')); // VCAP_SERVICES
+    username: "<username>",
+    password: "<password>"
+}, bluemix.getServiceCreds('cloudantNoSQLDB')); // VCAP_SERVICES
 
-
-/*function initDatabase() {
-
-
-    // create a database
-    cloudantService.db.create('ipa_demo');
-
-    // create an alias for working with that database
-    return cloudantService.db.use(CONVERSATIONS_TABLE);
-}*/
 
 var conversationsDB;
 var cloudantService = cloudant({account:cloudantCredentials.username, password:cloudantCredentials.password});
 cloudantService.db.list(function(err, allDbs) {
 
     //destroyDatabase();
-    for (var i = 0; i < allDbs.length; i++) {
-        if (allDbs[0] == CONVERSATIONS_DATABASE) {
-            conversationsDB = cloudantService.db.use(CONVERSATIONS_DATABASE)
-            console.log('Cloudant database ready');
-            return;
+    if(typeof allDbs != 'undefined'){
+        for (var i = 0; i < allDbs.length; i++) {
+            if (allDbs[0] == CONVERSATIONS_DATABASE) {
+                conversationsDB = cloudantService.db.use(CONVERSATIONS_DATABASE)
+                console.log('Cloudant database ready');
+                return;
+            }
         }
-     createDatabase();
     }
+    createDatabase();
 });
 
 exports.storeConversation = function(conversationObj) {
@@ -113,6 +105,7 @@ function createDatabase() {
 
 function destroyDatabase() {
     cloudantService.db.destroy(CONVERSATIONS_DATABASE, function(err) {
+        console.log('Destroyed Cloudant database');
         createDatabase();
     });
 }
