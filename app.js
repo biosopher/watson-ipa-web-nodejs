@@ -25,7 +25,7 @@ bodyParser = require('body-parser'),
 https       = require('https'),
 fs          = require('fs'),
 FormData    = require('form-data'),
-Q           = require('q'), // for deferred requests
+Q           = require('q'); // for deferred requests
 //conversationStore = require('./javascript/ConversationStore');
 
 app.use(bodyParser.json()); // support json encoded bodies
