@@ -13,18 +13,17 @@ D. Execute the task for the user (an exercise left for you to complete)
 
 ![](wiki/media/demo_architecture.png)
 
-These are the tasks we'll attempt to classify:
+To act on our user's intent, we first classify it into one our predefined classifications.  To accomplish this, we'll train the [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) using various text examples of users making the requests.  The NLC uses deep machine learning techniques to return the top predicted classes.
 
+Next, we need any related information required to complete the user's request.  To do this, we'll rely on the [Watson Dialog service](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/dialog.html) which supports building conversations between a user and an application. The Dialog service will track and store information obtained during the conversation until we have all the info required to complete the task. 
+
+These are the user intents we'll attempt to classify:
 * Schedule a meeting
 * Send an email
 * Ask to perform a numeric calculations
 * Request a joke
 
 #### Getting Started
-To act on our user's intent, we first need to classify it into one of our categories above.  To accomplish this, we'll rely on the [Watson Natural Language Classifier service](https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/nl-classifier/) which uses deep machine learning techniques to return the top matching predefined classes for short text inputs.  We'll train the NLC using various text examples of users making the requests above.  
-
-Next, we'll need to ensure we have all the information required to complete the user's request.  To do this, we'll rely on the [Watson Dialog service](http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/dialog.html) which supports building conversations between a user and an application. The Dialog service will track and store information obtained during the conversation until we have all the info required to complete the task. 
-
 Follow these sections to setup your services and host your app either in Bluemix or locally.
 - [ ] [Step 1: Setup Watson Natural Language Classifier and Dialog services on Bluemix](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Setup-Watson-Natural-Language-Classifier-and-Dialog-services-on-Bluemix)
 - [ ] [Step 2: Train the Natural Language Classifier service](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Train-the-Natural-Language-Classifier-service)
@@ -35,7 +34,6 @@ Follow these sections to setup your services and host your app either in Bluemix
 
 #### How Does the Demo Work
 Curious to know how the user text is classified to a specific intent and then mapped to a dialog flow?  Here's a brief overview of [how the Watson IPA Demo works?](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/How-Does-the-Watson-IPA-Demo-Work).
-
 
 #### Supporting Sections
 * [Obtaining Service Credentials from the Command Line](https://github.com/biosopher/watson-ipa-web-nodejs/wiki/Obtaining-Service-Credentials-from-the-Command-Line)
