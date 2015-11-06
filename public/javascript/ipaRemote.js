@@ -267,9 +267,6 @@ function getReplyToIntent(nlcResponse, userText)
         case "respond-calculation-conversion":
             replyText = CalculationPipeline.conversionCalculation(userText);
             break;
-        case "action-email-create":
-            replyText = "Sorry.  Email creation is not supported.";
-            break;
         case "action-task-create":
             replyText = "Sorry.  Task creation is not supported.";
             break;
