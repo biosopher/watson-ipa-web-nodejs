@@ -1,31 +1,9 @@
-/**
- * Copyright 2015 IBM Corp. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-'use strict';
-
 var express  = require('express'),
 app         = express(),
 request     = require('request'),
 bluemix     = require('./config/bluemix'),
 extend      = require('util')._extend,
-bodyParser = require('body-parser'),
-https       = require('https'),
-fs          = require('fs'),
-FormData    = require('form-data'),
-Q           = require('q'); // for deferred requests
+bodyParser = require('body-parser');
 //conversationStore = require('./javascript/ConversationStore');
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -50,7 +28,7 @@ var nlcCredentials =  extend({
 // HTTP proxy to the API
 app.use('/proxy', function(req, res) {
 
-    var credentials = req.query.proxyType ==  "nlc" ? nlcCredentials : dialogCredentials;
+    var credentials = req.query.proxyType ===  "nlc" ? nlcCredentials : dialogCredentials;
 
     // Remove api as it will be passed from the web client
     if (credentials.url.indexOf('/api') > 0) {
@@ -96,7 +74,7 @@ app.use(function(req, res, next) {
 var errorMessage = 'There was a problem with the request, please try again';
 
 // non 404 error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
     var error = {
         code: err.code || 500,
         error: err.message || err.error || errorMessage

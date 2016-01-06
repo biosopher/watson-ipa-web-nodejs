@@ -44,7 +44,7 @@
                         <action varName="var-invite_type" operator="SET_TO">action-meeting-create</action>
                         <output>
                             <prompt>
-                                <item>Who should I invite to your meeting?</item>
+                                <item>Should I invite Anthony or Watson to your meeting?  Yes. It's very sad, but you only have two friends.</item>
                             </prompt>
                             <goto ref="user_input-who"/>
                         </output>
@@ -188,14 +188,7 @@
     <entities>
         <entity name="contact_friends">
             <value name="Anthony" value="Anthony"/>
-            <value name="Keith" value="Kelly"/>
-            <value name="Kelly" value="Kelly"/>
-            <value name="Laura" value="Tina"/>
-            <value name="Niyati" value="Tina"/>
-            <value name="Ryan" value="Ryan"/>
-            <value name="Teresa" value="Tina"/>
-            <value name="Tina" value="Tina"/>
-            <value name="Watson" value="Kelly"/>
+            <value name="Watson" value="Watson"/>
         </entity>
         <entity name="contact_family">
             <value name="mother" value="mother"/>

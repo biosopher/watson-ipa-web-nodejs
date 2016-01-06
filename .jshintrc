@@ -30,7 +30,6 @@
   "immed": true,
   "maxlen": 100,
   "indent": 2,
-  "quotmark": "single",
   "laxbreak": false,
   "newcap": true,
   "noarg": true,
@@ -42,7 +41,6 @@
   "regexp": false,
   "undef": true,
   "sub": true,
-  "strict": true,
   "white": true,
   "unused": true
 }
