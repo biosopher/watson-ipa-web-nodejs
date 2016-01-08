@@ -8,14 +8,14 @@
                 </grammar>
                 <output>
                     <prompt>
-                        <item>What else can I help you with?</item>
+                        <item>What else can I help you with?  Would you like to schedule a meeting, write an email or send an SMS?</item>
                     </prompt>
                     <goto ref="processUserRequest"/>
                 </output>
             </input>
             <output>
                 <prompt>
-                    <item>Hello, how can I help you?</item>
+                    <item>Hello, how can I help you?  Would you like to schedule a meeting, write an email or send an SMS?</item>
                 </prompt>
                 <goto ref="processUserRequest"/>
             </output>
@@ -114,7 +114,7 @@
                         </input>
                         <output>
                             <prompt>
-                                <item>I can't find that person in your contacts.</item>
+                                <item>I can't find that person in your contacts.  Only Anthony and Watson are present in your contact list. Unsure why, but you only have two friends.</item>
                             </prompt>
                             <goto ref="output_invite_who"/>
                         </output>
