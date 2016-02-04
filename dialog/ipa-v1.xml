@@ -8,14 +8,14 @@
                 </grammar>
                 <output>
                     <prompt>
-                        <item>What else can I help you with?  Would you like to schedule a meeting, write an email or send an SMS?</item>
+                        <item>What else can I help you with?  Would you like to schedule a meeting, write an email, send an SMS, perform a calculation, or a quantity/size conversion?</item>
                     </prompt>
                     <goto ref="processUserRequest"/>
                 </output>
             </input>
             <output>
                 <prompt>
-                    <item>Hello, how can I help you?  Would you like to schedule a meeting, write an email or send an SMS?</item>
+                    <item>Hello, how can I help you?  Would you like to schedule a meeting, write an email, send an SMS, perform a calculation, or a quantity/size conversion?</item>
                 </prompt>
                 <goto ref="processUserRequest"/>
             </output>
