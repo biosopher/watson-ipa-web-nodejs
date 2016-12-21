@@ -13,7 +13,7 @@ applications:
   - ipa-nlc_service
   - ipa-dialog_service
 #  - ipa-cloudant_service
-  name: ipa_demo-anthony
+  name: ipa_demo-ade
   command: node app.js
   path: .
   memory: 512M
